@@ -20,9 +20,14 @@
       function addRandomSegment() {
         const index1 = Math.floor(Math.random() * graph.points.length);
         const index2 = Math.floor(Math.random() * graph.points.length);
-        graph.addSegment(
+        let success = false
+        if (index1 !== index2){
+            success = graph.tryAddSegment(
           new Segment(graph.points[index1], graph.points[index2])
         );
+        
+        }
+        console.log(success)
         ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
         graph.draw(ctx);
       }
