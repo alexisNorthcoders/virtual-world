@@ -3,6 +3,15 @@ class Graph {
     this.points = points;
     this.segments = segments;
   }
+  static load(info){
+    const points = info.points.map((point)=> new Point(point.x,point.y))
+    const segments = info.segments.map((segment)=>new Segment(
+      points.find((p)=> p.equals(segment.p1)),
+      points.find((p)=> p.equals(segment.p2))
+))
+    return new Graph(points,segments)
+
+  }
   addPoint(point) {
     this.points.push(point);
   }
