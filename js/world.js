@@ -58,7 +58,21 @@ class World{
                 supports.push(new Segment(q1,q2))
             }
         }
-        return supports
+
+        const bases = []
+        for (const seg of supports){
+            bases.push(new Envelope(seg,this.buildingWidth).poly)
+        }
+        for (let i=0; i<bases.length- 1;i++){
+            for (let j=i+1;j<bases.length;j++){
+                if (bases[i].intersectsPoly(bases[j])){
+                    bases.splice(j,1)
+                    j--
+                }
+            }
+        }
+
+        return bases
     }
     draw(ctx){
         for (const env of this.envelopes){
