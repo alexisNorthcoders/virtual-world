@@ -7,6 +7,7 @@ class World{
         this.envelopes = []
         this.roadBorders = []
         this.buildings = []
+        this.trees = []
         this.buildingMinLength = buildingMinLength
         this.buildingWidth = buildingWidth
         this.spacing = spacing
@@ -23,6 +24,26 @@ class World{
         }
         this.roadBorders = Polygon.union(this.envelopes.map((envelope)=> envelope.poly))
         this.buildings = this.#generateBuildings()
+        this.trees = this.#generateTrees()
+    }
+    #generateTrees(count=10){
+        const points = [
+            ...this.roadBorders.map((s)=> [s.p1,s.p2]).flat(),
+            ...this.buildings.map((b)=> b.points).flat()
+        ]
+        const left = Math.min(...points.map((p)=> p.x))
+        const right = Math.max(...points.map((p)=> p.x))
+        const top = Math.min(...points.map((p)=> p.y))
+        const bottom = Math.max(...points.map((p)=> p.y))
+        const trees = []
+        while (trees.length < count){
+            const p = new Point(
+                lerp(left,right,Math.random()),
+                lerp(bottom,top,Math.random()))
+            trees.push(p)
+
+        }
+        return trees
     }
     #generateBuildings(){
         const tmpEnvelopes = []
@@ -86,6 +107,9 @@ class World{
         }
         for (const bld of this.buildings){
             bld.draw(ctx)
+        }
+        for (const tree of this.trees){
+            tree.draw(ctx)
         }
      
     }
