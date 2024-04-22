@@ -6,8 +6,10 @@ class StopEditor {
     this.canvas = viewport.canvas;
     this.ctx = this.canvas.getContext("2d");
 
-    this.mouse = null
-    this.intent = null
+    this.mouse = null;
+    this.intent = null;
+
+    this.markings = world.markings;
   }
   enable() {
     this.#addEventListeners();
@@ -35,29 +37,42 @@ class StopEditor {
       this.world.laneGuides,
       10 * this.viewport.zoom
     );
-    if (segment){
-       const proj = segment.projectPoint(this.mouse)
-       if (proj.offset >= 0 && proj.offset <= 1){
+    if (segment) {
+      const proj = segment.projectPoint(this.mouse);
+      if (proj.offset >= 0 && proj.offset <= 1) {
         this.intent = new Stop(
-            proj.point,
-            segment.directionVector(),
-            world.roadWidth*0.5,
-            world.roadWidth*0.5)
-       }
-       else {
-        this.intent = null
-       }
-    }
-    else {
-        this.intent = null
+          proj.point,
+          segment.directionVector(),
+          world.roadWidth * 0.5,
+          world.roadWidth * 0.5
+        );
+      } else {
+        this.intent = null;
+      }
+    } else {
+      this.intent = null;
     }
   }
-  #handleMouseDown(){
-
+  #handleMouseDown(e) {
+    if (e.button === 0) {
+      if (this.intent) {
+        this.markings.push(this.intent);
+        this.intent = null;
+      }
+    }
+    if (e.button === 2) {
+      for (let i = 0; i < this.markings.length; i++) {
+        const poly = this.markings[i].poly;
+        if (poly.containsPoint(this.mouse)) {
+          this.markings.splice(i, 1);
+          return;
+        }
+      }
+    }
   }
-  display(){
-    if (this.intent){
-        this.intent.draw(this.ctx)
+  display() {
+    if (this.intent) {
+      this.intent.draw(this.ctx);
     }
   }
 }
