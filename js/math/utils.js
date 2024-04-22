@@ -53,6 +53,9 @@ function translate(loc,angle,offset){
         loc.y + Math.sin(angle) * offset
     )
 }
+function perpendicular(p){
+    return new Point(-p.y,p.x)
+}
 function angle(p){
     return Math.atan2(p.y,p.x)
 }
