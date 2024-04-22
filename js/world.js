@@ -15,8 +15,9 @@ class World {
     this.envelopes = [];
     this.roadBorders = [];
     this.buildings = [];
-
     this.trees = [];
+    this.laneGuides = []
+
     this.buildingMinLength = buildingMinLength;
     this.buildingWidth = buildingWidth;
     this.spacing = spacing;
@@ -36,6 +37,25 @@ class World {
     );
     this.buildings = this.#generateBuildings();
     this.trees = this.#generateTrees();
+    
+    this.laneGuides.length = 0
+    this.laneGuides.push(...this.#generateLaneGuides())
+  }
+  #generateLaneGuides(){
+    const tmpEnvelopes = [];
+    for (const seg of this.graph.segments) {
+      tmpEnvelopes.push(
+        new Envelope(
+          seg,
+          this.roadWidth *0.5,
+          this.roadRoundness
+        )
+      );
+    }
+    const segments = Polygon.union(tmpEnvelopes.map((e)=> e.poly))
+    return segments
+
+
   }
   #generateTrees() {
     const points = [
@@ -166,6 +186,10 @@ class World {
     for (const item of items) {
         item.draw(ctx,viewPoint);
       }
+    
+    for (const seg of this.laneGuides){
+      seg.draw(ctx, {color:"red"})
+    }
   
     
   }
