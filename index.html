@@ -15,7 +15,6 @@
       &nbsp;
       <button id="graphBtn" onclick="setMode('graph')">🌐</button>
       <button id="stopBtn" onclick="setMode('stop')">🛑</button>
-
     </div>
     <script src="js/world.js"></script>
     <script src="js/graphEditor.js"></script>
@@ -42,7 +41,7 @@
       const graphEditor = new GraphEditor(viewport, graph);
 
       let oldGraphHash = graph.hash();
-
+      setMode("graph")
       animate();
       function animate() {
         viewport.reset();
@@ -50,9 +49,9 @@
           world.generate();
           oldGraphHash = graph.hash();
         }
-        const viewPoint = scale(viewport.getOffset(),-1)
+        const viewPoint = scale(viewport.getOffset(), -1);
 
-        world.draw(ctx,viewPoint);
+        world.draw(ctx, viewPoint);
         ctx.globalAlpha = 0.3;
         graphEditor.display();
 
@@ -64,6 +63,25 @@
       }
       function save() {
         localStorage.setItem("graph", JSON.stringify(graph));
+      }
+      function setMode(mode) {
+        disableEditors();
+        switch (mode) {
+          case "graph":
+            graphBtn.style.backgroundColor = "white";
+            graphBtn.style.filter = "";
+            break;
+          case "stop":
+            stopBtn.style.backgroundColor = "white";
+            stopBtn.style.filter = "";
+            break;
+        }
+      }
+      function disableEditors() {
+        graphBtn.style.backgroundColor = "gray";
+        graphBtn.style.filter = "grayscale(100%)";
+        stopBtn.style.backgroundColor = "gray";
+        stopBtn.style.filter = "grayscale(100%)";
       }
     </script>
   </body>
