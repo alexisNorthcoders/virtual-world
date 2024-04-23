@@ -61,7 +61,7 @@
       let world = worldInfo ? World.load(worldInfo) : new World(new Graph());
       const graph = world.graph;
 
-      const viewport = new Viewport(myCanvas);
+      const viewport = new Viewport(myCanvas, world.zoom,world.offset);
       const tools = {
         graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
         stop: { button: stopBtn, editor: new StopEditor(viewport, world) },
@@ -107,6 +107,8 @@
         world.markings.length = 0;
       }
       function save() {
+        world.zoom = viewport.zoom
+        world.offset = viewport.offset
         const element = document.createElement("a");
         element.setAttribute(
           "href",
