@@ -1,27 +1,102 @@
-body{
-    background-color: black;
-    text-align: center;
+body {
+  margin: 0;
+  background: darkgray;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#verticalButtons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+}
+button {
+  width: fit-content;
+  min-width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 5px 7px 5px;
+  margin: 2px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  border: 4px solid transparent;
 }
 
-h1{
-    color:white;
-    font-family: Arial, Helvetica, sans-serif;
+button:hover {
+  border-style: solid;
+  border-width: 4px;
+  border-color: black;
+}
+#carCanvas {
+  background: lightgray;
+}
+#networkCanvas {
+  background: black;
+}
+input {
+  font-size: 1.5rem;
+  height: fit-content;
+  width: 100px;
+  text-align: right;
+  border-radius: 5px;
 }
 
-#myCanvas{
-     background-color: #2a5 ;
+label {
+  font-size: 1.5rem;
 }
-button, .file-input-label {
-    display: inline-block;
-    background-color: white;
-    font-size: 3vw;
-    padding: 5px 7px 7px 5px;
-    border:none;
-    border-radius:5px;
-    text-shadow: 1px 1px black;
-    cursor: pointer;
+#highScoreDisplay {
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 50px;
+  background-color: gray;
+  border-radius: 5px;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
-input[type="file"]{
-    display:none
+.modal-content {
+  border-radius: 5px;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  background-color: rgba(255, 0, 0, 0.541);
+
+  border-radius: 5px;
+  height: 30px;
+  width: 30px;
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: red;
 }
