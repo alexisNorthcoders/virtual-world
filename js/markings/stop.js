@@ -1,11 +1,11 @@
-class Stop extends Marking{
+class Stop extends Marking {
   constructor(center, directionVector, width, height) {
-    super(center, directionVector, width, height) 
-   
-    this.border = this.poly.segments[2]
+    super(center, directionVector, width, height);
+    this.type = "stop";
+    this.border = this.poly.segments[2];
   }
   draw(ctx) {
-    this.border.draw(ctx, {width: 5, color:"white"})
+    this.border.draw(ctx, { width: 5, color: "white" });
     ctx.save();
     ctx.translate(this.center.x, this.center.y);
     ctx.rotate(angle(this.directionVector) - Math.PI / 2);
