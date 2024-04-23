@@ -21,7 +21,6 @@
       <button id="lightBtn" onclick="setMode('light')">🚦</button>
       <button id="startBtn" onclick="setMode('start')">🚙</button>
       <button id="targetBtn" onclick="setMode('target')">🎯</button>
-      
     </div>
     <script src="js/world.js"></script>
     <script src="js/viewport.js"></script>
@@ -58,18 +57,27 @@
 
       const worldString = localStorage.getItem("world");
       const worldInfo = worldString ? JSON.parse(worldString) : null;
-      const world = worldInfo ? World.load(worldInfo) : new World(new Graph())
-      const graph = world.graph
-      
+      const world = worldInfo ? World.load(worldInfo) : new World(new Graph());
+      const graph = world.graph;
+
       const viewport = new Viewport(myCanvas);
       const tools = {
         graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
         stop: { button: stopBtn, editor: new StopEditor(viewport, world) },
-        crossing: { button: crossingBtn, editor: new CrossingEditor(viewport, world) },
+        crossing: {
+          button: crossingBtn,
+          editor: new CrossingEditor(viewport, world),
+        },
         start: { button: startBtn, editor: new StartEditor(viewport, world) },
-        parking: { button: parkingBtn, editor: new ParkingEditor(viewport, world) },
+        parking: {
+          button: parkingBtn,
+          editor: new ParkingEditor(viewport, world),
+        },
         light: { button: lightBtn, editor: new LightEditor(viewport, world) },
-        target: { button: targetBtn, editor: new TargetEditor(viewport, world) },
+        target: {
+          button: targetBtn,
+          editor: new TargetEditor(viewport, world),
+        },
         yield: { button: yieldBtn, editor: new YieldEditor(viewport, world) },
       };
 
@@ -98,14 +106,23 @@
         world.markings.length = 0;
       }
       function save() {
+        const element = document.createElement("a");
+        element.setAttribute(
+          "href",
+          "data:application/json;charset=utf-8," +
+            encodeURIComponent(JSON.stringify(world))
+        );
+        const fileName = prompt("File name:");
+        element.setAttribute("download", fileName + ".world");
+        element.click();
         localStorage.setItem("world", JSON.stringify(world));
       }
       function setMode(mode) {
         disableEditors();
-            tools[mode].button.style.backgroundColor = "white";
-            tools[mode].button.style.filter = "";
-            tools[mode].editor.enable();
-   }
+        tools[mode].button.style.backgroundColor = "white";
+        tools[mode].button.style.filter = "";
+        tools[mode].editor.enable();
+      }
       function disableEditors() {
         for (const tool of Object.values(tools)) {
           tool.button.style.backgroundColor = "gray";
