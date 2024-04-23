@@ -12,6 +12,9 @@ class Car {
     this.friction = 0.05;
     this.angle = angle;
     this.damaged = false;
+
+    this.fitness = 0
+
     this.useBrain = controlType === "AI";
     if (controlType != "DUMMY") {
       this.sensor = new Sensor(this);
@@ -43,6 +46,7 @@ class Car {
   update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move();
+      this.fitness += this.speed
       this.polygon = this.#createPolygon();
       this.damaged = this.#assessDamage(roadBorders, traffic);
     }
