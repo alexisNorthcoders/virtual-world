@@ -1,6 +1,6 @@
 class Car {
   static AICars = [];
-  constructor(x, y, width, height, controlType, maxSpeed = 3, colour = "blue") {
+  constructor(x, y, width, height, controlType,angle=0, maxSpeed = 3, colour = "blue") {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -10,7 +10,7 @@ class Car {
     this.acceleration = 0.2;
     this.maxSpeed = maxSpeed;
     this.friction = 0.05;
-    this.angle = 0;
+    this.angle = angle;
     this.damaged = false;
     this.useBrain = controlType === "AI";
     if (controlType != "DUMMY") {
