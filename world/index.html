@@ -72,15 +72,17 @@
     <script src="js/primitives/polygon.js"></script>
     <script src="js/primitives/envelope.js"></script>
 
+    <script src="saves/manchester.world"></script>
+
     <script>
       myCanvas.width = 600;
       myCanvas.height = 600;
 
       const ctx = myCanvas.getContext("2d");
 
-      const worldString = localStorage.getItem("world");
+     /*  const worldString = localStorage.getItem("world");
       const worldInfo = worldString ? JSON.parse(worldString) : null;
-      let world = worldInfo ? World.load(worldInfo) : new World(new Graph());
+      let world = worldInfo ? World.load(worldInfo) : new World(new Graph()); */
       const graph = world.graph;
 
       const viewport = new Viewport(myCanvas, world.zoom, world.offset);
@@ -110,7 +112,7 @@
       function animate() {
         viewport.reset();
         if (graph.hash() != oldGraphHash) {
-          world.generate();
+          //world.generate();
           oldGraphHash = graph.hash();
         }
         const viewPoint = scale(viewport.getOffset(), -1);
@@ -137,7 +139,7 @@
           "data:application/json;charset=utf-8," +
             encodeURIComponent(JSON.stringify(world))
         );
-        const fileName = prompt("File name:");
+        const fileName = "manchester";
         element.setAttribute("download", fileName + ".world");
         element.click();
         localStorage.setItem("world", JSON.stringify(world));
