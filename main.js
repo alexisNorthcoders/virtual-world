@@ -15,14 +15,14 @@ const networkCtx = networkCanvas.getContext("2d");
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
 const miniMap = new MiniMap(miniMapCanvas,world.graph,300)
 
-const N = 100;
+const N = 1;
 let cars = generateCars(N);
 let bestCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
     if (i != 0) {
-      NeuralNetwork.mutate(cars[i].brain, 0.3);
+      NeuralNetwork.mutate(cars[i].brain, 0.2);
     }
   }
 }
