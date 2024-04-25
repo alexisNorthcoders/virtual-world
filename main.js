@@ -37,20 +37,22 @@ function discard() {
   localStorage.removeItem("bestBrain");
 }
 
-function generateCars(N, speed = 5) {
+function generateCars(N){
   const startPoints = world.markings.filter((m) => m instanceof Start);
-  const startPoint =
-    startPoints.length > 0 ? startPoints[0].center : new Point(100, 100);
-  const startDirection =
-    startPoints.length > 0 ? startPoints[0].directionVector : new Point(0, -1);
-  const startAngle = -angle(startDirection) + Math.PI / 2;
-  const cars = [];
-  for (let i = 1; i <= N; i++) {
-    cars.push(
-      new Car(startPoint.x, startPoint.y, 30, 50, "AI", startAngle, speed)
-    );
+  const startPoint = startPoints.length > 0
+    ? startPoints[0].center
+    : new Point(100, 100);
+  const dir = startPoints.length > 0
+    ? startPoints[0].directionVector
+    : new Point(0, -1);
+  const startAngle = - angle(dir) + Math.PI / 2;
+  
+  const cars=[];
+  for(let i=1;i<=N;i++){
+    const car = new Car(startPoint.x, startPoint.y,30,50,"AI",startAngle)
+    car.load(carInfo)
+      cars.push(car);
   }
-
   return cars;
 }
 animate();
