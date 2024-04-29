@@ -83,6 +83,10 @@ class World {
       new Segment(endSeg.p1, projEnd),
       new Segment(projEnd, endSeg.p2),
     ];
+    if (startSeg.equals(endSeg)){
+      tmpSegs.push(new Segment(projStart,projEnd))
+
+    }
 
     this.graph.segments = this.graph.segments.concat(tmpSegs)
 
@@ -90,7 +94,7 @@ class World {
 
     this.graph.removePoint(projStart)
     this.graph.removePoint(projEnd)
-    
+
     const segs = [];
     for (let i = 1; i < path.length; i++) {
       segs.push(new Segment(path[i - 1], path[i]));
@@ -98,7 +102,10 @@ class World {
     const tmpEnvelopes = segs.map(
       (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
     );
-    this.corridor = tmpEnvelopes;
+
+    const segments = Polygon.union(tmpEnvelopes.map((e)=> e.poly))
+
+    this.corridor = segments;
   }
   #generateLaneGuides() {
     const tmpEnvelopes = [];
@@ -303,7 +310,7 @@ class World {
 
     if (this.corridor) {
       for (const seg of this.corridor) {
-        seg.draw(ctx);
+        seg.draw(ctx, {color:"red", width:4});
       }
     }
 
