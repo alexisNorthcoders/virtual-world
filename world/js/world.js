@@ -24,34 +24,32 @@ class World {
 
     this.markings = [];
 
-    this.cars = []
-    this.bestCar = null
+    this.cars = [];
+    this.bestCar = null;
 
     this.frameCount = 0;
 
-   
-
     this.generate();
   }
-  static load(info){
-    const world = new World(new Graph())
-    world.graph = Graph.load(info.graph)
+  static load(info) {
+    const world = new World(new Graph());
+    world.graph = Graph.load(info.graph);
     world.roadWidth = info.roadWidth;
     world.roadRoundness = info.roadRoundness;
     world.buildingMinLength = info.buildingMinLength;
     world.buildingWidth = info.buildingWidth;
     world.spacing = info.spacing;
     world.treeSize = info.treeSize;
-    world.envelopes = info.envelopes.map((e)=> Envelope.load(e))
-    world.roadBorders = info.roadBorders.map((b)=> new Segment(b.p1,b.p2))
-    world.buildings = info.buildings.map((e)=> Building.load(e))
-    world.trees = info.trees.map((t) => new Tree(t.center,info.treeSize))
-    world.laneGuides = info.laneGuides.map((g)=> new Segment(g.p1,g.p2)) 
-    world.markings = info.markings.map((m)=> Marking.load(m))
-    world.zoom = info.zoom
-    world.offset = info.offset
+    world.envelopes = info.envelopes.map((e) => Envelope.load(e));
+    world.roadBorders = info.roadBorders.map((b) => new Segment(b.p1, b.p2));
+    world.buildings = info.buildings.map((e) => Building.load(e));
+    world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
+    world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
+    world.markings = info.markings.map((m) => Marking.load(m));
+    world.zoom = info.zoom;
+    world.offset = info.offset;
 
-    return world
+    return world;
   }
   generate() {
     this.envelopes.length = 0;
@@ -69,14 +67,38 @@ class World {
     this.laneGuides.length = 0;
     this.laneGuides.push(...this.#generateLaneGuides());
   }
-  generateCorridor(start,end){
-    const path = this.graph.getShortestPath(start,end)
-    const segs = []
-    for (let i =1; i<path.length;i++){
-      segs.push(new Segment(path[i-1], path[i]))
+  generateCorridor(start, end) {
+    const startSeg = getNearestSegment(start, this.graph.segments);
+    const endSeg = getNearestSegment(end, this.graph.segments);
+
+    const { point: projStart } = startSeg.projectPoint(start);
+    const { point: projEnd } = endSeg.projectPoint(end);
+
+    this.graph.points.push(projStart);
+    this.graph.points.push(projEnd);
+
+    const tmpSegs = [
+      new Segment(startSeg.p1, projStart),
+      new Segment(projStart, startSeg.p2),
+      new Segment(endSeg.p1, projEnd),
+      new Segment(projEnd, endSeg.p2),
+    ];
+
+    this.graph.segments = this.graph.segments.concat(tmpSegs)
+
+    const path = this.graph.getShortestPath(projStart, projEnd);
+
+    this.graph.removePoint(projStart)
+    this.graph.removePoint(projEnd)
+    
+    const segs = [];
+    for (let i = 1; i < path.length; i++) {
+      segs.push(new Segment(path[i - 1], path[i]));
     }
-    const tmpEnvelopes = segs.map((s)=> new Envelope(s,this.roadWidth, this.roadRoundness))
-    this.corridor = tmpEnvelopes
+    const tmpEnvelopes = segs.map(
+      (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
+    );
+    this.corridor = tmpEnvelopes;
   }
   #generateLaneGuides() {
     const tmpEnvelopes = [];
@@ -208,20 +230,20 @@ class World {
 
     return bases.map((b) => new Building(b));
   }
-  #getIntersections(){
-    const subset = []
-    for (const point of this.graph.points){
-      let degree = 0
-      for (const seg of this.graph.segments){
-        if (seg.includes(point)){
-          degree++
+  #getIntersections() {
+    const subset = [];
+    for (const point of this.graph.points) {
+      let degree = 0;
+      for (const seg of this.graph.segments) {
+        if (seg.includes(point)) {
+          degree++;
         }
       }
-      if (degree > 2){
-        subset.push(point)
+      if (degree > 2) {
+        subset.push(point);
       }
     }
-    return subset
+    return subset;
   }
   #updateLights() {
     const lights = this.markings.filter((marking) => marking instanceof Light);
@@ -260,7 +282,7 @@ class World {
         }
       }
     }
-    this.frameCount++
+    this.frameCount++;
   }
   draw(ctx, viewPoint, showStartMarkings = true, renderRadius = 1000) {
     this.#updateLights();
@@ -268,8 +290,7 @@ class World {
       env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
     }
     for (const marking of this.markings) {
-      if (!(marking instanceof Start) || showStartMarkings){
-
+      if (!(marking instanceof Start) || showStartMarkings) {
         marking.draw(ctx);
       }
     }
@@ -280,24 +301,24 @@ class World {
       seg.draw(ctx, { color: "white", width: 4 });
     }
 
-    if (this.corridor){
-      for (const seg of this.corridor){
-        seg.draw(ctx)
+    if (this.corridor) {
+      for (const seg of this.corridor) {
+        seg.draw(ctx);
       }
     }
 
     ctx.globalAlpha = 0.2;
     for (const car of this.cars) {
-      car.draw(ctx)
+      car.draw(ctx);
     }
     ctx.globalAlpha = 1;
-    if (this.bestCar){
-      this.bestCar.draw(ctx,true)
+    if (this.bestCar) {
+      this.bestCar.draw(ctx, true);
     }
 
     const items = [...this.buildings, ...this.trees].filter(
-      (item)=> item.base.distanceToPoint(viewPoint) < renderRadius
-    )
+      (item) => item.base.distanceToPoint(viewPoint) < renderRadius
+    );
     items.sort(
       (a, b) =>
         b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)

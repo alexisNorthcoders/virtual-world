@@ -62,12 +62,12 @@ class GraphEditor {
 
     window.addEventListener("keydown", (e) => {
       if (e.key === "s") {
-        this.start = this.hovered;
+        this.start = this.mouse;
       }
     });
     window.addEventListener("keydown", (e) => {
       if (e.key === "e") {
-        this.end = this.hovered;
+        this.end = this.mouse;
       }
       if (this.start && this.end) {
         world.generateCorridor(this.start, this.end);
