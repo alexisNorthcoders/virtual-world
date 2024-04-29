@@ -16,8 +16,8 @@ class GraphEditor {
   }
   disable() {
     this.#removeEventListeners();
-    this.selected = false
-    this.hovered = false
+    this.selected = false;
+    this.hovered = false;
   }
   #handleMouseDown(event) {
     if (event.button === 2) {
@@ -52,17 +52,32 @@ class GraphEditor {
   }
   #addEventListeners() {
     this.boundMouseDown = this.#handleMouseDown.bind(this);
-    this.boundMouseMove = this.#handleMouseMove.bind(this)
-    this.boundMouseUp = () => (this.dragging = false)
-    this.boundContextMenu = (event) =>event.preventDefault()
+    this.boundMouseMove = this.#handleMouseMove.bind(this);
+    this.boundMouseUp = () => (this.dragging = false);
+    this.boundContextMenu = (event) => event.preventDefault();
     this.canvas.addEventListener("mousedown", this.boundMouseDown);
     this.canvas.addEventListener("mousemove", this.boundMouseMove);
-    this.canvas.addEventListener("mouseup", this.boundMouseUp );
+    this.canvas.addEventListener("mouseup", this.boundMouseUp);
     this.canvas.addEventListener("contextmenu", this.boundContextMenu);
+
+    window.addEventListener("keydown", (e) => {
+      if (this.hovered) {
+        if (e.key === "s") {
+          this.start = this.hovered;
+        }
+      }
+    });
+    window.addEventListener("keydown", (e) => {
+      if (this.hovered) {
+        if (e.key === "e") {
+          this.end = this.hovered;
+        }
+      }
+    });
   }
   #removeEventListeners() {
-    this.canvas.removeEventListener("mousedown",this.boundMouseDown);
-    this.canvas.removeEventListener("mousemove",this.boundMouseMove);
+    this.canvas.removeEventListener("mousedown", this.boundMouseDown);
+    this.canvas.removeEventListener("mousemove", this.boundMouseMove);
     this.canvas.removeEventListener("mouseup", this.boundMouseUp);
     this.canvas.removeEventListener("contextmenu", this.boundContextMenu);
   }
@@ -87,6 +102,15 @@ class GraphEditor {
       const intent = this.hovered ? this.hovered : this.mouse;
       new Segment(this.selected, intent).draw(ctx, { dash: [3, 3] });
       this.selected.draw(this.ctx, { outline: true });
+    }
+    if (this.start && this.end) {
+      const path = this.graph.getShortestPath(this.start, this.end);
+      for (const point of path) {
+        point.draw(this.ctx, { size: 50, color: "blue" });
+        if (point.prev) {
+          new Segment(point, point.prev).draw(this.ctx, { width: 20 });
+        }
+      }
     }
   }
   #removePoint(point) {
