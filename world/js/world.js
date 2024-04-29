@@ -69,6 +69,15 @@ class World {
     this.laneGuides.length = 0;
     this.laneGuides.push(...this.#generateLaneGuides());
   }
+  generateCorridor(start,end){
+    const path = this.graph.getShortestPath(start,end)
+    const segs = []
+    for (let i =1; i<path.length;i++){
+      segs.push(new Segment(path[i-1], path[i]))
+    }
+    const tmpEnvelopes = segs.map((s)=> new Envelope(s,this.roadWidth, this.roadRoundness))
+    this.corridor = tmpEnvelopes
+  }
   #generateLaneGuides() {
     const tmpEnvelopes = [];
     for (const seg of this.graph.segments) {
@@ -269,6 +278,12 @@ class World {
     }
     for (const seg of this.roadBorders) {
       seg.draw(ctx, { color: "white", width: 4 });
+    }
+
+    if (this.corridor){
+      for (const seg of this.corridor){
+        seg.draw(ctx)
+      }
     }
 
     ctx.globalAlpha = 0.2;
