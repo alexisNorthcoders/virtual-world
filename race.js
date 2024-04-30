@@ -65,38 +65,39 @@ function generateCars(N, type) {
   }
   return cars;
 }
-let frameCount = 0
+
+let frameCount = 0;
 
 animate();
-function updateCarProgress(car){
-  if (!car.finishTime){
-    car.progress = 0
+function updateCarProgress(car) {
+  if (!car.finishTime) {
+    car.progress = 0;
     const carSeg = getNearestSegment(car, world.corridor.skeleton);
     for (let i = 0; i < world.corridor.skeleton.length; i++) {
       const s = world.corridor.skeleton[i];
-      
-      if (s.equals(carSeg)){
-        const proj = s.projectPoint(car)
-        proj.point.draw(carCtx)
-        const firstPartOfSegment = new Segment(s.p1,proj.point)
-        firstPartOfSegment.draw(carCtx, { color: "purple", width: 5 });
-        car.progress += firstPartOfSegment.length()
-        break
-      }
-      else{
-        s.draw(carCtx, { color: "purple", width: 5 });
-        car.progress += s.length()
-      }
-    }
-    const totalDistance = world.corridor.skeleton.reduce((acc,s)=> acc + s.length(),0)
-    car.progress /= totalDistance
-    if (car.progress >= 1){
-      car.progress = 1
-      car.finishTime = frameCount
-    }
-    console.log(car.progress)
-   }
 
+      if (s.equals(carSeg)) {
+        const proj = s.projectPoint(car);
+        proj.point.draw(carCtx);
+        const firstPartOfSegment = new Segment(s.p1, proj.point);
+        firstPartOfSegment.draw(carCtx, { color: "purple", width: 5 });
+        car.progress += firstPartOfSegment.length();
+        break;
+      } else {
+        s.draw(carCtx, { color: "purple", width: 5 });
+        car.progress += s.length();
+      }
+    }
+    const totalDistance = world.corridor.skeleton.reduce(
+      (acc, s) => acc + s.length(),
+      0
+    );
+    car.progress /= totalDistance;
+    if (car.progress >= 1) {
+      car.progress = 1;
+      car.finishTime = frameCount;
+    }
+  }
 }
 function animate() {
   for (let i = 0; i < cars.length; i++) {
@@ -115,7 +116,12 @@ function animate() {
   world.draw(carCtx, viewPoint, false);
   miniMap.update(viewPoint);
 
-  updateCarProgress(myCar)
-  frameCount++
+  updateCarProgress(myCar);
+  frameCount++;
+
+  carCtx.fillStyle = "black";
+  carCtx.font = "20px Arial";
+  carCtx.fillText(myCar.speed.toFixed(2) + " mph", -20-viewport.offset.x, 40-viewport.offset.y);
+
   requestAnimationFrame(animate);
 }
