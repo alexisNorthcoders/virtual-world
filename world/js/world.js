@@ -67,7 +67,7 @@ class World {
     this.laneGuides.length = 0;
     this.laneGuides.push(...this.#generateLaneGuides());
   }
-  generateCorridor(start, end) {
+  generateCorridor(start, end, extendEnd = false) {
     const startSeg = getNearestSegment(start, this.graph.segments);
     const endSeg = getNearestSegment(end, this.graph.segments);
 
@@ -83,29 +83,42 @@ class World {
       new Segment(endSeg.p1, projEnd),
       new Segment(projEnd, endSeg.p2),
     ];
-    if (startSeg.equals(endSeg)){
-      tmpSegs.push(new Segment(projStart,projEnd))
-
+    if (startSeg.equals(endSeg)) {
+      tmpSegs.push(new Segment(projStart, projEnd));
     }
 
-    this.graph.segments = this.graph.segments.concat(tmpSegs)
+    this.graph.segments = this.graph.segments.concat(tmpSegs);
 
     const path = this.graph.getShortestPath(projStart, projEnd);
 
-    this.graph.removePoint(projStart)
-    this.graph.removePoint(projEnd)
+    this.graph.removePoint(projStart);
+    this.graph.removePoint(projEnd);
 
     const segs = [];
     for (let i = 1; i < path.length; i++) {
       segs.push(new Segment(path[i - 1], path[i]));
     }
+    if (extendEnd) {
+      const lastSeg = segs[segs.length - 1];
+      const lastSegDir = lastSeg.directionVector();
+      segs.push(
+        new Segment(
+          lastSeg.p2,
+          add(lastSeg.p2, scale(lastSegDir, 2 * this.roadWidth))
+        )
+      );
+    }
+
     const tmpEnvelopes = segs.map(
       (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
     );
+    if (extendEnd) {
+      segs.pop();
+    }
 
-    const segments = Polygon.union(tmpEnvelopes.map((e)=> e.poly))
+    const segments = Polygon.union(tmpEnvelopes.map((e) => e.poly));
 
-    this.corridor = {borders: segments, skeleton:segs};
+    this.corridor = { borders: segments, skeleton: segs };
   }
   #generateLaneGuides() {
     const tmpEnvelopes = [];
@@ -310,7 +323,7 @@ class World {
 
     if (this.corridor) {
       for (const seg of this.corridor.borders) {
-        seg.draw(ctx, {color:"red", width:4});
+        seg.draw(ctx, { color: "red", width: 4 });
       }
     }
 
