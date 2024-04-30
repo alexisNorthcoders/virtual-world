@@ -32,8 +32,8 @@ for (let i = 0; i < cars.length; i++) {
   div.id = "stat_" + i;
   div.innerText = i;
   div.style.color = cars[i].colour;
-  div.classList.add("stat")
-  statistics.appendChild(div)
+  div.classList.add("stat");
+  statistics.appendChild(div);
 }
 
 let roadBorders = [];
@@ -74,6 +74,7 @@ function generateCars(N, type) {
       3,
       color
     );
+    car.name = type === "AI" ? "AI" + i : "Me"
     car.load(carInfo);
     cars.push(car);
   }
@@ -92,13 +93,10 @@ function updateCarProgress(car) {
 
       if (s.equals(carSeg)) {
         const proj = s.projectPoint(car);
-        proj.point.draw(carCtx);
         const firstPartOfSegment = new Segment(s.p1, proj.point);
-        firstPartOfSegment.draw(carCtx, { color: "purple", width: 5 });
         car.progress += firstPartOfSegment.length();
         break;
       } else {
-        s.draw(carCtx, { color: "purple", width: 5 });
         car.progress += s.length();
       }
     }
@@ -130,16 +128,19 @@ function animate() {
   world.draw(carCtx, viewPoint, false);
   miniMap.update(viewPoint);
 
-  for (let i=0;i< cars.length;i++){
-    updateCarProgress(cars[i])
+  for (let i = 0; i < cars.length; i++) {
+    updateCarProgress(cars[i]);
   }
-  cars.sort((a,b)=> b.progress - a.progress)
-  for (let i=0;i< cars.length;i++){
-    const stat = document.getElementById("stat_" + i)
-    stat.style.color = cars[i].colour
-    stat.innerText = (i+1) + ": " + (cars[i].progress*100).toFixed(1)+ "%"
-
-
+  cars.sort((a, b) => b.progress - a.progress);
+  for (let i = 0; i < cars.length; i++) {
+    const stat = document.getElementById("stat_" + i);
+    stat.style.color = cars[i].colour;
+    stat.innerText = i + 1 + ": " + cars[i].name + (cars[i].damaged ? " 💀" : "");
+    stat.style.backgroundColor = cars[i].type === "AI" ? "black" : "white";
+    if (cars[i].finishTime) {
+      stat.innerHTML += "<span style='float:right;'>" + (cars[i].finishTime/60).toFixed(2) + "s </span>"
+      
+    }
   }
 
   frameCount++;
