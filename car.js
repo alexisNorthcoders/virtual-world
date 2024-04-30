@@ -5,6 +5,8 @@ class Car {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.type = controlType
+    this.colour = colour
 
     this.speed = 0;
     this.acceleration = 0.2;

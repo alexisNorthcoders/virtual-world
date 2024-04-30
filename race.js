@@ -1,4 +1,4 @@
-const rightPanelWidth = 300
+const rightPanelWidth = 300;
 
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth;
@@ -7,8 +7,8 @@ const miniMapCanvas = document.getElementById("miniMapCanvas");
 miniMapCanvas.width = rightPanelWidth;
 miniMapCanvas.height = rightPanelWidth;
 
-statistics.style.width=rightPanelWidth + "px"
-statistics.style.height=rightPanelWidth + "px"
+statistics.style.width = rightPanelWidth + "px";
+statistics.style.height = window.innerHeight - rightPanelWidth - 60 + "px";
 
 const carCtx = carCanvas.getContext("2d");
 
@@ -21,10 +21,19 @@ const myCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
-    if (i != 0) {
+    if (i > 1) {
       NeuralNetwork.mutate(cars[i].brain, 0.05);
     }
   }
+}
+
+for (let i = 0; i < cars.length; i++) {
+  const div = document.createElement("div");
+  div.id = "stat_" + i;
+  div.innerText = i;
+  div.style.color = cars[i].colour;
+  div.classList.add("stat")
+  statistics.appendChild(div)
 }
 
 let roadBorders = [];
@@ -121,9 +130,20 @@ function animate() {
   world.draw(carCtx, viewPoint, false);
   miniMap.update(viewPoint);
 
-  updateCarProgress(myCar);
+  for (let i=0;i< cars.length;i++){
+    updateCarProgress(cars[i])
+  }
+  cars.sort((a,b)=> b.progress - a.progress)
+  for (let i=0;i< cars.length;i++){
+    const stat = document.getElementById("stat_" + i)
+    stat.style.color = cars[i].colour
+    stat.innerText = (i+1) + ": " + (cars[i].progress*100).toFixed(1)+ "%"
+
+
+  }
+
   frameCount++;
-  myCarSpeed.innerText=`${myCar.speed.toFixed(2)} mph`
- 
+  myCarSpeed.innerText = `${myCar.speed.toFixed(2)} mph`;
+
   requestAnimationFrame(animate);
 }

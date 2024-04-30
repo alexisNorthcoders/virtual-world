@@ -65,6 +65,7 @@ label {
   top:20px;
   border-radius: 5px;
   opacity: 50%;
+  overflow-y: auto;
 }
 #myCarSpeed{
   background: black;
@@ -75,5 +76,12 @@ label {
   opacity: 50%;
   font-size: large;
   color: white;
+}
+.stat{
+  font-size: x-large;
+  font-family: Arial, Helvetica, sans-serif;
+  padding:10px;
+
+  
 }
 
