@@ -128,7 +128,7 @@ class Car {
   }
   draw(ctx, drawSensor = false) {
     if (this.sensor && drawSensor) {
-      this.sensor.draw(ctx);
+     // this.sensor.draw(ctx); 
     }
     ctx.save();
     ctx.translate(this.x, this.y);

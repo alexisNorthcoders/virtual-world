@@ -3,24 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Self-driving-car</title>
+    <title>Self-driving-car - Race</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <canvas id="carCanvas"></canvas>
-    <div id="verticalButtons">
-      <button id="carbrain" onclick="save()" title="Save brain of current car">
-        💾
-      </button>
-      <button onclick="discard()" title="Delete car brain in storage">
-        🗑️
-      </button>
-    </div>
-    <div>
-      <canvas id="networkCanvas"></canvas>
-      <canvas id="miniMapCanvas"></canvas>
-    </div>
-
+    <canvas id="miniMapCanvas" class="miniMap"></canvas>
+ 
     <script src="world/js/world.js"></script>
     <script src="world/js/viewport.js"></script>
     <script src="world/js/markings/marking.js"></script>
@@ -60,6 +49,6 @@
     <script src="utils.js"></script>
     <script src="controls.js"></script>
     <script src="car.js"></script>
-    <script src="main.js"></script>
+    <script src="race.js"></script>
   </body>
 </html>

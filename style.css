@@ -51,3 +51,10 @@ input {
 label {
   font-size: 1.5rem;
 }
+.miniMap{
+  position: absolute;
+  right:20px;
+  bottom:20px;
+  border-radius: 50%;
+  opacity: 50%;
+}
