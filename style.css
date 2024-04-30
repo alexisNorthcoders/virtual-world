@@ -58,3 +58,22 @@ label {
   border-radius: 50%;
   opacity: 50%;
 }
+#statistics{
+  background: black;
+  position: absolute;
+  right:20px;
+  top:20px;
+  border-radius: 5px;
+  opacity: 50%;
+}
+#myCarSpeed{
+  background: black;
+  position: absolute;
+  left:20px;
+  bottom:20px;
+  border-radius: 5px;
+  opacity: 50%;
+  font-size: large;
+  color: white;
+}
+

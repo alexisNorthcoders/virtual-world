@@ -1,14 +1,19 @@
+const rightPanelWidth = 300
+
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth;
 carCanvas.height = window.innerHeight;
 const miniMapCanvas = document.getElementById("miniMapCanvas");
-miniMapCanvas.width = 300;
-miniMapCanvas.height = 300;
+miniMapCanvas.width = rightPanelWidth;
+miniMapCanvas.height = rightPanelWidth;
+
+statistics.style.width=rightPanelWidth + "px"
+statistics.style.height=rightPanelWidth + "px"
 
 const carCtx = carCanvas.getContext("2d");
 
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
-const miniMap = new MiniMap(miniMapCanvas, world.graph, 300);
+const miniMap = new MiniMap(miniMapCanvas, world.graph, rightPanelWidth);
 
 const N = 100;
 let cars = generateCars(1, "KEYS").concat(generateCars(N, "AI"));
@@ -118,10 +123,7 @@ function animate() {
 
   updateCarProgress(myCar);
   frameCount++;
-
-  carCtx.fillStyle = "black";
-  carCtx.font = "20px Arial";
-  carCtx.fillText(myCar.speed.toFixed(2) + " mph", -20-viewport.offset.x, 40-viewport.offset.y);
-
+  myCarSpeed.innerText=`${myCar.speed.toFixed(2)} mph`
+ 
   requestAnimationFrame(animate);
 }
