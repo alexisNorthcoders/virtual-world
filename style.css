@@ -85,3 +85,15 @@ label {
   
 }
 
+#counter{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  font-size: 40vh;
+  font-family: Arial, Helvetica, sans-serif;
+  opacity: 50%;
+  color: white;
+
+}
+

@@ -74,7 +74,7 @@ function generateCars(N, type) {
       3,
       color
     );
-    car.name = type === "AI" ? "AI" + i : "Me"
+    car.name = type === "AI" ? "AI" + i : "Me";
     car.load(carInfo);
     cars.push(car);
   }
@@ -82,7 +82,8 @@ function generateCars(N, type) {
 }
 
 let frameCount = 0;
-
+let started = false
+startCounter()
 animate();
 function updateCarProgress(car) {
   if (!car.finishTime) {
@@ -111,10 +112,31 @@ function updateCarProgress(car) {
     }
   }
 }
+function startCounter() {
+  counter.innerText = "3";
+  setTimeout(() => {
+    counter.innerText = "2";
+    setTimeout(() => {
+      counter.innerText = "1";
+      setTimeout(() => {
+        counter.innerText = "GO!";
+        setTimeout(() => {
+          counter.innerText = "";
+          started=true
+          frameCount=0
+          
+        }, 1000);
+      }, 1000);
+    }, 1000);
+  }, 1000);
+}
 function animate() {
-  for (let i = 0; i < cars.length; i++) {
-    cars[i].update(roadBorders, []);
+  if (started){
+    for (let i = 0; i < cars.length; i++) {
+      cars[i].update(roadBorders, []);
+    }
   }
+ 
 
   world.cars = cars;
   world.bestCar = myCar;
@@ -135,11 +157,14 @@ function animate() {
   for (let i = 0; i < cars.length; i++) {
     const stat = document.getElementById("stat_" + i);
     stat.style.color = cars[i].colour;
-    stat.innerText = i + 1 + ": " + cars[i].name + (cars[i].damaged ? " 💀" : "");
+    stat.innerText =
+      i + 1 + ": " + cars[i].name + (cars[i].damaged ? " 💀" : "");
     stat.style.backgroundColor = cars[i].type === "AI" ? "black" : "white";
     if (cars[i].finishTime) {
-      stat.innerHTML += "<span style='float:right;'>" + (cars[i].finishTime/60).toFixed(2) + "s </span>"
-      
+      stat.innerHTML +=
+        "<span style='float:right;'>" +
+        (cars[i].finishTime / 60).toFixed(2) +
+        "s </span>";
     }
   }
 
