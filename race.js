@@ -26,7 +26,7 @@ let roadBorders = [];
 const target = world.markings.find((m) => m instanceof Target);
 if (target) {
   world.generateCorridor(myCar, target.center);
-  roadBorders = world.corridor.map((s) => [s.p1, s.p2]);
+  roadBorders = world.corridor.borders.map((s) => [s.p1, s.p2]);
 } else {
   roadBorders = world.roadBorders.map((s) => [s.p1, s.p2]);
 }
@@ -49,14 +49,55 @@ function generateCars(N, type) {
 
   const cars = [];
   for (let i = 1; i <= N; i++) {
-    const color = type === "AI" ? getRandomColor() : "blue"
-    const car = new Car(startPoint.x, startPoint.y, 30, 50, type, startAngle, 3 ,color);
+    const color = type === "AI" ? getRandomColor() : "blue";
+    const car = new Car(
+      startPoint.x,
+      startPoint.y,
+      30,
+      50,
+      type,
+      startAngle,
+      3,
+      color
+    );
     car.load(carInfo);
     cars.push(car);
   }
   return cars;
 }
+let frameCount = 0
+
 animate();
+function updateCarProgress(car){
+  if (!car.finishTime){
+    car.progress = 0
+    const carSeg = getNearestSegment(car, world.corridor.skeleton);
+    for (let i = 0; i < world.corridor.skeleton.length; i++) {
+      const s = world.corridor.skeleton[i];
+      
+      if (s.equals(carSeg)){
+        const proj = s.projectPoint(car)
+        proj.point.draw(carCtx)
+        const firstPartOfSegment = new Segment(s.p1,proj.point)
+        firstPartOfSegment.draw(carCtx, { color: "purple", width: 5 });
+        car.progress += firstPartOfSegment.length()
+        break
+      }
+      else{
+        s.draw(carCtx, { color: "purple", width: 5 });
+        car.progress += s.length()
+      }
+    }
+    const totalDistance = world.corridor.skeleton.reduce((acc,s)=> acc + s.length(),0)
+    car.progress /= totalDistance
+    if (car.progress >= 1){
+      car.progress = 1
+      car.finishTime = frameCount
+    }
+    console.log(car.progress)
+   }
+
+}
 function animate() {
   for (let i = 0; i < cars.length; i++) {
     cars[i].update(roadBorders, []);
@@ -74,5 +115,7 @@ function animate() {
   world.draw(carCtx, viewPoint, false);
   miniMap.update(viewPoint);
 
+  updateCarProgress(myCar)
+  frameCount++
   requestAnimationFrame(animate);
 }

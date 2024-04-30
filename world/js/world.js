@@ -105,7 +105,7 @@ class World {
 
     const segments = Polygon.union(tmpEnvelopes.map((e)=> e.poly))
 
-    this.corridor = segments;
+    this.corridor = {borders: segments, skeleton:segs};
   }
   #generateLaneGuides() {
     const tmpEnvelopes = [];
@@ -309,7 +309,7 @@ class World {
     }
 
     if (this.corridor) {
-      for (const seg of this.corridor) {
+      for (const seg of this.corridor.borders) {
         seg.draw(ctx, {color:"red", width:4});
       }
     }
