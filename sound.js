@@ -1,39 +1,45 @@
-function beep(frequency) {
-  
-    const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)();
+function beep(frequency,waveType = "sine",timeout) {
+  return new Promise((resolve)=>{
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const osc = audioContext.createOscillator();
     const envelope = audioContext.createGain();
     osc.frequency.setValueAtTime(frequency, 0);
-   
+    osc.type = waveType;
     osc.connect(envelope);
     osc.start();
-    osc.stop(0.5);
+    osc.stop(0.4);
     envelope.gain.value = 0;
     envelope.gain.linearRampToValueAtTime(0.1, 0.1);
     envelope.gain.linearRampToValueAtTime(0, 0.4);
     envelope.connect(audioContext.destination);
+
+    setTimeout(() => {
+        resolve();
+      }, timeout);
+  })
+   
 }
 function explosion() {
-  
-    const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)();
-    const numOscillators = 10
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const numOscillators = 10;
 
-    for (let i=0;i<numOscillators;i++){
-        const osc = audioContext.createOscillator();
-        const envelope = audioContext.createGain();
-        osc.frequency.setValueAtTime(100+Math.random()*200, 0);
-      
-        osc.connect(envelope);
-        osc.start();
-        osc.stop(1);
-        envelope.gain.value = 0;
-        envelope.gain.linearRampToValueAtTime(0.1, 0.1);
-        envelope.gain.linearRampToValueAtTime(0, 1);
-        envelope.connect(audioContext.destination);
-    }
-  
+  for (let i = 0; i < numOscillators; i++) {
+    const osc = audioContext.createOscillator();
+    const envelope = audioContext.createGain();
+    osc.frequency.setValueAtTime(100 + Math.random() * 200, 0);
+
+    osc.connect(envelope);
+    osc.start();
+    osc.stop(1);
+    envelope.gain.value = 0;
+    envelope.gain.linearRampToValueAtTime(0.1, 0.1);
+    envelope.gain.linearRampToValueAtTime(0, 1);
+    envelope.connect(audioContext.destination);
+  }
+}
+async function finish(){
+   await beep(400,"sawtooth",200)
+   await beep(600,"sawtooth")
 }
 class Engine {
   constructor() {
