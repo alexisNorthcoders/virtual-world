@@ -52,18 +52,22 @@ class World {
     return world;
   }
   generate() {
+    console.log("generating envelopes")
     this.envelopes.length = 0;
     for (const seg of this.graph.segments) {
       this.envelopes.push(
         new Envelope(seg, this.roadWidth, this.roadRoundness)
       );
     }
+    console.log("generating roadborders")
     this.roadBorders = Polygon.union(
       this.envelopes.map((envelope) => envelope.poly)
     );
-   // this.buildings = this.#generateBuildings();
-   // this.trees = this.#generateTrees();
-
+    console.log("generating buildings")
+    this.buildings = this.#generateBuildings();
+    console.log("generating trees")
+    this.trees = this.#generateTrees();
+    console.log("generating laneguides")
     this.laneGuides.length = 0;
     this.laneGuides.push(...this.#generateLaneGuides());
   }
