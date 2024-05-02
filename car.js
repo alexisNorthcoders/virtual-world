@@ -1,12 +1,21 @@
 class Car {
   static AICars = [];
-  constructor(x, y, width, height, controlType,angle=0, maxSpeed = 3, colour = "blue") {
+  constructor(
+    x,
+    y,
+    width,
+    height,
+    controlType,
+    angle = 0,
+    maxSpeed = 3,
+    colour = "blue"
+  ) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.type = controlType
-    this.colour = colour
+    this.type = controlType;
+    this.colour = colour;
 
     this.speed = 0;
     this.acceleration = 0.2;
@@ -15,7 +24,7 @@ class Car {
     this.angle = angle;
     this.damaged = false;
 
-    this.fitness = 0
+    this.fitness = 0;
 
     this.useBrain = controlType === "AI";
     if (controlType != "DUMMY") {
@@ -40,12 +49,11 @@ class Car {
 
       maskCtx.globalCompositeOperation = "destination-atop";
       maskCtx.drawImage(this.img, 0, 0, this.width, this.height);
- /*      if (controlType === "AI"){
+      /*      if (controlType === "AI"){
         Car.AICars.push(this)} */
-      
     };
   }
-  load(info){
+  load(info) {
     this.brain = info.brain;
     this.maxSpeed = info.maxSpeed;
     this.friction = info.friction;
@@ -58,19 +66,22 @@ class Car {
   update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move();
-      this.fitness += this.speed
+      this.fitness += this.speed;
       this.polygon = this.#createPolygon();
       this.damaged = this.#assessDamage(roadBorders, traffic);
-      if (this.damaged){
-        this.speed=0;
+      if (this.damaged) {
+        this.speed = 0;
+        if (this.type === "KEYS") {
+          explosion();
+        }
       }
     }
-    if(this.sensor){
-      this.sensor.update(roadBorders,traffic);
-      const offsets=this.sensor.readings.map(
-          s=>s==null?0:1-s.offset
-      ).concat([this.speed/this.maxSpeed]);
-      const outputs=NeuralNetwork.feedForward(offsets,this.brain);
+    if (this.sensor) {
+      this.sensor.update(roadBorders, traffic);
+      const offsets = this.sensor.readings
+        .map((s) => (s == null ? 0 : 1 - s.offset))
+        .concat([this.speed / this.maxSpeed]);
+      const outputs = NeuralNetwork.feedForward(offsets, this.brain);
 
       if (this.useBrain) {
         this.controls.forward = outputs[0];
@@ -79,10 +90,10 @@ class Car {
         this.controls.reverse = outputs[3];
       }
     }
-    if (this.engine){
-      const percent = Math.abs(this.speed/this.maxSpeed)
-      this.engine.setVolume(percent)
-      this.engine.setPitch(percent)
+    if (this.engine) {
+      const percent = Math.abs(this.speed / this.maxSpeed);
+      this.engine.setVolume(percent);
+      this.engine.setPitch(percent);
     }
   }
   #assessDamage(roadBorders, traffic) {
@@ -138,7 +149,7 @@ class Car {
   }
   draw(ctx, drawSensor = false) {
     if (this.sensor && drawSensor) {
-     // this.sensor.draw(ctx); 
+      // this.sensor.draw(ctx);
     }
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -162,16 +173,15 @@ class Car {
       this.height
     );
     ctx.restore();
-   
   }
-  static increaseMaxSpeed(){
+  static increaseMaxSpeed() {
     for (let car of Car.AICars) {
-      car.maxSpeed++
+      car.maxSpeed++;
     }
   }
-  static decreaseMaxSpeed(){
+  static decreaseMaxSpeed() {
     for (let car of Car.AICars) {
-      car.maxSpeed--
+      car.maxSpeed--;
     }
   }
 }
